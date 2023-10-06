@@ -1,54 +1,45 @@
 #!/usr/bin/python3
-"""
-Distribute an archive to web servers using Fabric.
-"""
-
-from fabric.api import run, local, put, task
+""" Distributes an archive to my web servers """
+from fabric.api import run, local, put
 from os import path
+from hosts import *
 from datetime import datetime as stamp
-from hosts import *  # Make sure you import your host configuration here.
 
-@task
+
 def do_pack():
-    """Create a compressed archive of the 'web_static' directory."""try:
-	time_stamp = stamp.now().strftime("%Y%m%d%H%M%S")
-	archive_path = f"versions/web_static_{time_stamp}.tgz"
-	
-	local("mkdir -p versions")
-	local(f"tar -cvzf {archive_path} web_static")
+    """Function that returns a gzip compressed file"""
+    try:
+        time_stamp = stamp.now().strftime("%Y%m%d%H%M%S")
+        __path = f"versions/web_static_{time_stamp}.tgz"
+        local("mkdir -p versions")
+        local(f"tar -cvzf {__path} web_static")
+    except Exception:
+        return None
+    else:
+        return __path
 
-	return archive_path
-except Exception as a:
-	print(f"Error while creating archive: {a}")
-	return None
 
-@task
 def do_deploy(archive_path):
-    """Distribute an archive to web servers and update the deployment."""
-
-try:
+    """Function distributes an archive to my web servers"""
+    try:
         if not path.exists(archive_path):
-		print(f"Archive not found: {archive_path}")
-		return False
-	releases_dir = "/data/web_static/releases"
-        archive_name = path.basename(archive_path).split(".")[0]
-	put(archive_path, "/tmp/")
-	run(f"rm -rf {releases_dir}/{archive_name}")
-        
-        run(f"mkdir -p {releases_dir}/{archive_name}")
-        
-        run(f"tar -xzf /tmp/{archive_name}.tgz -C {releases_dir}/{archive_name}")
-        
-        run(f"rm /tmp/{archive_name}.tgz")
-	run(f"mv {releases_dir}/{archive_name}/web_static/* {releases_dir}/{archive_name}/")
-       
-        run(f"rm -rf {releases_dir}/{archive_name}/web_static")
-        
-        
-        run(f"ln -s {releases_dir}/{archive_name} /data/web_static/current")
+            return False
 
-        print("New version deployed successfully!")
+        releases = "/data/web_static/releases"
+        web_static = path.basename(archive_path).split(".")[0]
+        put(archive_path, "/tmp/")
+        run('ls /tmp')
+        run("rm -rf {}/{}/".format(releases, web_static))
+        run("mkdir -p {}/{}/".format(releases, web_static))
+        run("tar -xzf /tmp/{}.tgz -C {}/{}".format(web_static, releases,
+                                                   web_static))
+        run("rm /tmp/{}.tgz".format(web_static))
+        run("mv {0}/{1}/web_static/* {0}/{1}/".format(releases, web_static))
+        run("rm -rf {}/{}/web_static".format(releases, web_static))
+        run("rm -rf /data/web_static/current")
+        run("ln -s {}/{}/ /data/web_static/current".format(releases,
+                                                           web_static))
+        print("New version deployed!")
         return True
-    except Exception as e:
-        print(f"Error while deploying: {a}")
+    except Exception:
         return False
