@@ -5,7 +5,7 @@ from fabric.api import task, local
 from datetime import datetime as stamp
 
 
-@task(alias="tasky")
+@task(alias="pack")
 def do_pack():
 	"""this function returns gzip compresed file"""
 	try:
