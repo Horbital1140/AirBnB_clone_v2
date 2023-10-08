@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from fabric.api import task, local
 from datetime import datetime as stamp
 
