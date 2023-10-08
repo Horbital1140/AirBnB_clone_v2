@@ -1,45 +1,49 @@
 #!/usr/bin/python3
-""" Distributes an archive to my web servers """
-from fabric.api import run, local, put
-from os import path
-from hosts import *
-from datetime import datetime as stamp
+# Fabfile to distribute an archive to a web server.
+import os.path
+from fabric.api import env
+from fabric.api import put
+from fabric.api import run
 
-
-def do_pack():
-    """Function that returns a gzip compressed file"""
-    try:
-        time_stamp = stamp.now().strftime("%Y%m%d%H%M%S")
-        __path = f"versions/web_static_{time_stamp}.tgz"
-        local("mkdir -p versions")
-        local(f"tar -cvzf {__path} web_static")
-    except Exception:
-        return None
-    else:
-        return __path
+env.hosts = ["104.196.168.90", "35.196.46.172"]
 
 
 def do_deploy(archive_path):
-    """Function distributes an archive to my web servers"""
-    try:
-        if not path.exists(archive_path):
-            return False
+    """Distributes an archive to a web server.
 
-        releases = "/data/web_static/releases"
-        web_static = path.basename(archive_path).split(".")[0]
-        put(archive_path, "/tmp/")
-        run('ls /tmp')
-        run("rm -rf {}/{}/".format(releases, web_static))
-        run("mkdir -p {}/{}/".format(releases, web_static))
-        run("tar -xzf /tmp/{}.tgz -C {}/{}".format(web_static, releases,
-                                                   web_static))
-        run("rm /tmp/{}.tgz".format(web_static))
-        run("mv {0}/{1}/web_static/* {0}/{1}/".format(releases, web_static))
-        run("rm -rf {}/{}/web_static".format(releases, web_static))
-        run("rm -rf /data/web_static/current")
-        run("ln -s {}/{}/ /data/web_static/current".format(releases,
-                                                           web_static))
-        print("New version deployed!")
-        return True
-    except Exception:
+    Args:
+        archive_path (str): The path of the archive to distribute.
+    Returns:
+        If the file doesn't exist at archive_path or an error occurs - False.
+        Otherwise - True.
+    """
+    if os.path.isfile(archive_path) is False:
         return False
+    file = archive_path.split("/")[-1]
+    name = file.split(".")[0]
+
+    if put(archive_path, "/tmp/{}".format(file)).failed is True:
+        return False
+    if run("rm -rf /data/web_static/releases/{}/".
+           format(name)).failed is True:
+        return False
+    if run("mkdir -p /data/web_static/releases/{}/".
+           format(name)).failed is True:
+        return False
+    if run("tar -xzf /tmp/{} -C /data/web_static/releases/{}/".
+           format(file, name)).failed is True:
+        return False
+    if run("rm /tmp/{}".format(file)).failed is True:
+        return False
+    if run("mv /data/web_static/releases/{}/web_static/* "
+           "/data/web_static/releases/{}/".format(name, name)).failed is True:
+        return False
+    if run("rm -rf /data/web_static/releases/{}/web_static".
+           format(name)).failed is True:
+        return False
+    if run("rm -rf /data/web_static/current").failed is True:
+        return False
+    if run("ln -s /data/web_static/releases/{}/ /data/web_static/current".
+           format(name)).failed is True:
+        return False
+    return True
