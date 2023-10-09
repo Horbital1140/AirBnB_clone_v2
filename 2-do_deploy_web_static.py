@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """ Distributes an archive to my web servers """
-from fabric.api import run, local, put, task
+from fabric.api import run, local, put, task, env
 from os import path
-from hosts import *
 from datetime import datetime as stamp
+
+
+env.hosts = ["100.25.188.129", "204.236.240.90"]
 
 
 @task(alias="pack")

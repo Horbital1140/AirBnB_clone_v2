@@ -1,8 +1,11 @@
 #!/usr/bin/python3
-from fabric.api import run, local, task, lcd, cd, put
+from fabric.api import run, local, task, lcd, cd, put, env
 from os import listdir, path
 from datetime import datetime as stamp
 from hosts import *
+
+
+env.hosts = ["100.25.188.129", "204.236.240.90"]
 
 
 def do_pack():
