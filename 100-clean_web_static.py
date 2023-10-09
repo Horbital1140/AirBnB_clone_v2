@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from fabric.api import run, local, task, lcd, cd, put, runs_once
+from fabric.api import run, local, task, lcd, cd, put, runs_once, env
 from os import listdir, path
 from datetime import datetime as stamp
 
