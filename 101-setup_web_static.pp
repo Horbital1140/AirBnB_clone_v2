@@ -6,17 +6,18 @@ package { 'nginx':
 file { ['/data', '/data/web_static', '/data/web_static/releases', '/data/web_static/shared',
   '/data/web_static/releases/test']:
   ensure  => 'directory',
-  owner   => 'Horbital1140',
-  group   => 'Horbital1140',
+  owner   => 'siaw',
+  group   => 'siaw',
   mode    => '0755',
   recurse => true,
 }
 
+
 file { '/data/web_static/current':
   ensure => link,
   target => '/data/web_static/releases/test',
-  owner  => 'Horbital1140',
-  group  => 'Horbital1140',
+  owner  => 'siaw',
+  group  => 'siaw',
   force  => true,
 }
 
