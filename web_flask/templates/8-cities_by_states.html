@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block list %}
+<ul>
+ {% for state in states %}
+    <li>{{state.id}}: <b>{{state.name}}</b>
+        <ul>
+            {% for city in state.cities|sort(attribute='name') %}
+            <li>{{city.id}}: <b>{{city.name}}</b></li>
+            {% endfor %}
+        </ul>
+    </li>
+ {% endfor %}
+</ul>
+{% endblock %}

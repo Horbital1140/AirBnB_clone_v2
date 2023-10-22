@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block list %}
+    {% if state %}
+        {% if cities %}
+            <h3>Cities:</h3>
+            <ul>
+                {% for city in cities|sort(attribute='name') %}
+                    <li>{{ city.id }}: <b>{{ city.name}}</b></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+    {% if states %}
+        <ul>
+            {% for state in states %}
+                <li>{{state.id}}: <b>{{state.name}}</b></li>
+            {% endfor %}
+         </ul>
+    {% endif %}
+{% endblock %}
