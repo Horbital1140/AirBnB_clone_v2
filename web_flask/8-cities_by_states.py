@@ -9,13 +9,13 @@ app.url_map.strict_slashes = False
 
 
 @app.teardown_appcontext
-def horbit_clos_db(exception):
+def horbit_teardown_db(exception):
     """it closes the database again after each request"""
     storage.close()
 
 
 @app.route('/states_list')
-def horbit_states_list():
+def horbit_cities_by_states():
     states = list(storage.all("state").values())
     states.sort(key=lambda x: x.name)
     return render_template("8-cities_by_states.html", states=states)
