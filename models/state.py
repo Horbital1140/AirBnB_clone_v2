@@ -18,3 +18,5 @@ class State(BaseModel, Base):
         from models.city import City
         city_objs = storage.all(City)
         return [city for city in city_objs.values() if city.state_id == self.id]
+
+    
