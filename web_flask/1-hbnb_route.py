@@ -14,6 +14,7 @@ app = Flask(__name__)
 def horbit():
     return 'Hello HBNB!'
 
+
 @app.route('/hbnb', strict_slashes=False)
 def horbit_2():
     return 'HBNB'
