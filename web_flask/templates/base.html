@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<HTML lang="en">
+<head>
+    <title>HBNB</title>
+</head>
+<body>
+{% if heading %}
+<h1>{{ heading }}</h1>
+{% else %}
+<h1>States</h1>
+{% endif %}
+    {% block list %}
+    {% endblock %}
+</body>
+</HTML>

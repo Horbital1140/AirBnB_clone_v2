@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block list %}
+<ul>
+ {% for state in states %}
+    <li>{{state.id}}: <b>{{state.name}}</b></li>
+ {% endfor %}
+</ul>
+{% endblock %}
